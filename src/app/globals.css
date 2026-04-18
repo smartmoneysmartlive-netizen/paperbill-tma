@@ -1,0 +1,140 @@
+:root {
+  /* Brand Colors */
+  --primary-blue: #0A1F44;
+  --primary-blue-light: #1A3A6E;
+  --action-green: #00C853;
+  --gold-start: #F9A825;
+  --gold-end: #FFD54F;
+  
+  /* Surfaces & Backgrounds */
+  --bg-light: #F5F7FA;
+  --card-light: #FFFFFF;
+  --bg-dark: #0D1117;
+  --card-dark: #161B22;
+
+  /* Text Colors */
+  --text-primary: #1A1A1A;
+  --text-secondary: #6B7280;
+  --text-white: #FFFFFF;
+
+  /* Status Colors */
+  --status-success: #00C853;
+  --status-failed: #EF4444;
+  --status-pending: #F59E0B;
+
+  /* Tokens */
+  --radius-standard: 16px;
+  --radius-small: 12px;
+  --spacing-base: 8px;
+  --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.05);
+  
+  /* Defaults */
+  --background: var(--bg-light);
+  --foreground: var(--text-primary);
+  --card-bg: var(--card-light);
+}
+
+/* Manual Dark Mode Class */
+.dark {
+  --background: var(--bg-dark);
+  --foreground: var(--text-white);
+  --text-primary: var(--text-white);
+  --text-secondary: #9CA3AF;
+  --card-bg: var(--card-dark);
+  --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  height: 100%;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-poppins), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Base Components */
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius-standard);
+  padding: 16px;
+  box-shadow: var(--shadow-soft);
+  border: 1px solid rgba(0,0,0,0.02);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.dark .card {
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.btn-primary {
+  background: var(--action-green);
+  color: white;
+  border: none;
+  border-radius: var(--radius-small);
+  height: 48px;
+  padding: 0 24px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: transform 0.1s ease;
+}
+
+.btn-primary:active {
+  transform: scale(0.95);
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1.5px solid var(--action-green);
+  color: var(--action-green);
+  border-radius: var(--radius-small);
+  height: 48px;
+  padding: 0 24px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Gradients */
+.gradient-wallet {
+  background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
+  color: white;
+}
+
+.gradient-gold {
+  background: linear-gradient(135deg, var(--gold-start) 0%, var(--gold-end) 100%);
+}
+
+/* Animations */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
