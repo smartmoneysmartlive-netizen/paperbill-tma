@@ -2,6 +2,7 @@
 
 import { Coins, TrendingUp, Send } from 'lucide-react';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 export default function TokenCard() {
   return (
@@ -10,14 +11,14 @@ export default function TokenCard() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.1 }}
       className="card gradient-gold"
-      style={{ position: 'relative' as any, overflow: 'hidden' }}
+      style={{ position: 'relative' as any, overflow: 'hidden' as any }}
     >
-      <div className="shimmer" style={{ position: 'absolute', inset: 0, opacity: 0.3 }} />
+      <div className="shimmer" style={{ position: 'absolute' as any, inset: 0 as any, opacity: 0.3 }} />
       
-      <div style={{ position: 'relative', zIndex: 1 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+      <div style={{ position: 'relative' as any, zIndex: 1 }}>
+        <div style={{ display: 'flex' as any, justifyContent: 'space-between' as any, alignItems: 'flex-start' as any }}>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', opacity: 0.9 }}>
+            <div style={{ display: 'flex' as any, alignItems: 'center' as any, gap: '6px', opacity: 0.9 }}>
               <Coins size={16} color="#0A1F44" />
               <span style={{ fontSize: '12px', fontWeight: '600', color: '#0A1F44' }}>PAPER BALANCE</span>
             </div>

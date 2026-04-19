@@ -7,6 +7,7 @@ import TransactionList from '@/components/dashboard/TransactionList';
 import BottomNav from '@/components/dashboard/BottomNav';
 import { Bell, Search } from 'lucide-react';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 export default function Home() {
   return (
@@ -56,33 +57,35 @@ export default function Home() {
       {/* Token Featured Card */}
       <TokenCard />
 
-      {/* Promo Card */}
-      <motion.div 
-        whileTap={{ scale: 0.98 }}
-        className="card" 
-        style={{ 
-          backgroundColor: 'var(--primary-blue)', 
-          color: 'white',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          border: 'none'
-        }}
-      >
-        <div>
-          <h4 style={{ fontSize: '15px', fontWeight: '700' }}>🔥 Pay with PAPER</h4>
-          <p style={{ fontSize: '12px', opacity: 0.8 }}>Get instant 5% cashback on all data buys</p>
-        </div>
-        <div style={{ 
-          background: 'rgba(255,255,255,0.2)', 
-          padding: '6px 12px', 
-          borderRadius: '20px',
-          fontSize: '11px',
-          fontWeight: '700'
-        }}>
-          Claim Now
-        </div>
-      </motion.div>
+      <Link href="/services" style={{ textDecoration: 'none' }}>
+        <motion.div 
+          whileTap={{ scale: 0.98 }}
+          className="card" 
+          style={{ 
+            backgroundColor: 'var(--primary-blue)', 
+            color: 'white',
+            display: 'flex' as any,
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            border: 'none',
+            cursor: 'pointer'
+          }}
+        >
+          <div>
+            <h4 style={{ fontSize: '15px', fontWeight: '700' }}>🔥 Pay with PAPER</h4>
+            <p style={{ fontSize: '12px', opacity: 0.8 }}>Get instant 5% cashback on all data buys</p>
+          </div>
+          <div style={{ 
+            background: 'rgba(255,255,255,0.2)', 
+            padding: '6px 12px', 
+            borderRadius: '20px',
+            fontSize: '11px',
+            fontWeight: '700'
+          }}>
+            Claim Now
+          </div>
+        </motion.div>
+      </Link>
 
       {/* Transactions */}
       <TransactionList />

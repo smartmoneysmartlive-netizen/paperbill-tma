@@ -2,6 +2,7 @@
 
 import { Plus, ArrowLeftRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 export default function WalletCard() {
   return (
@@ -18,16 +19,20 @@ export default function WalletCard() {
         </h2>
       </div>
 
-      <div style={{ display: 'flex', gap: '12px' }}>
-        <button className="btn-primary" style={{ flex: 1, background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)' }}>
-          <Plus size={20} />
-          Fund
-        </button>
-        <button className="btn-primary" style={{ flex: 1, background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)' }}>
-          <ArrowLeftRight size={20} />
-          Swap
-        </button>
-      </div>
+        <div style={{ display: 'flex' as any, gap: '12px' }}>
+          <Link href="/wallet" style={{ flex: 1 }}>
+            <button className="btn-primary" style={{ width: '100%', backgroundColor: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.1)' }}>
+              <Plus size={18} />
+              <span>Fund</span>
+            </button>
+          </Link>
+          <Link href="/rewards" style={{ flex: 1 }}>
+            <button className="btn-primary" style={{ width: '100%', backgroundColor: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.1)' }}>
+              <ArrowLeftRight size={18} />
+              <span>Swap</span>
+            </button>
+          </Link>
+        </div>
     </motion.div>
   );
 }

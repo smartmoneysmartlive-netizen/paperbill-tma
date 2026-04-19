@@ -1,0 +1,101 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(uuid())
+  telegramId    BigInt   @unique
+  username      String?
+  firstName     String?
+  lastName      String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  wallet        Wallet?
+  transactions  Transaction[]
+  tokenHistory  TokenTransaction[]
+}
+
+model Wallet {
+  id            String   @id @default(uuid())
+  userId        String   @unique
+  nairaBalance  Int      @default(0) // Balance in Kobo or Naira (using Int for precision)
+  paperBalance  Int      @default(0)
+  walletAddress String?  @unique // Future crypto migration
+  updatedAt     DateTime @updatedAt
+  
+  user          User     @relation(fields: [userId], references: [id])
+}
+
+enum TransactionType {
+  AIRTIME
+  DATA
+  CABLE_TV
+  ELECTRICITY
+  EDUCATION
+  CREDIT
+  DEBIT
+  REWARD
+}
+
+enum TransactionStatus {
+  PENDING
+  PROCESSING
+  SUCCESS
+  FAILED
+  REFUNDED
+}
+
+enum Currency {
+  NGN
+  PAPER
+}
+
+model Transaction {
+  id            String            @id @default(uuid())
+  userId        String
+  type          TransactionType
+  amount        Int
+  currency      Currency          @default(NGN)
+  status        TransactionStatus @default(PENDING)
+  reference     String            @unique
+  provider      String?           // e.g., "cheapdatahub", "vtung"
+  metadata      Json?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  
+  user          User              @relation(fields: [userId], references: [id])
+}
+
+enum TokenAction {
+  EARN
+  SPEND
+  STAKE
+}
+
+model TokenTransaction {
+  id            String      @id @default(uuid())
+  userId        String
+  amount        Int
+  type          TokenAction
+  source        String?     // e.g., "referral", "purchase_bonus"
+  createdAt     DateTime    @default(now())
+  
+  user          User        @relation(fields: [userId], references: [id])
+}
+
+model SystemSetting {
+  id            String   @id @default(uuid())
+  key           String   @unique
+  value         String
+  description   String?
+  updatedAt     DateTime @updatedAt
+}

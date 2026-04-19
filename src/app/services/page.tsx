@@ -6,14 +6,13 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 
 const services = [
-  { id: 'airtime', label: 'Airtime', icon: Phone, color: '#4F46E5', desc: 'Top up any phone' },
-  { id: 'data', label: 'Data', icon: Globe, color: '#10B981', desc: 'Cheap data bundles' },
-  { id: 'tv', label: 'Cable TV', icon: Tv, color: '#F59E0B', desc: 'DSTV, GOTV & more' },
-  { id: 'electricity', label: 'Electricity', icon: Zap, color: '#EF4444', desc: 'Buy power tokens' },
-  { id: 'internet', label: 'Internet', icon: Wifi, color: '#06B6D4', desc: 'Smile, Spectranet' },
-  { id: 'education', label: 'Education', icon: Ticket, color: '#8B5CF6', desc: 'WAEC & JAMB pins' },
-  { id: 'betting', label: 'Betting', icon: CreditCard, color: '#EC4899', desc: 'Fund betting wallet' },
-  { id: 'insurance', label: 'Insurance', icon: Building2, color: '#6366F1', desc: 'Health & Vehicle' },
+  { id: 'airtime', label: 'Airtime', icon: Phone, color: '#4F46E5', desc: 'Top up any phone', active: true },
+  { id: 'data', label: 'Data', icon: Globe, color: '#10B981', desc: 'Cheap data bundles', active: true },
+  { id: 'tv', label: 'Cable TV', icon: Tv, color: '#F59E0B', desc: 'DSTV, GOTV & more', active: true },
+  { id: 'electricity', label: 'Electricity', icon: Zap, color: '#EF4444', desc: 'Buy power tokens', active: true },
+  { id: 'education', label: 'Education', icon: Ticket, color: '#8B5CF6', desc: 'WAEC & JAMB pins', active: true },
+  { id: 'internet', label: 'Internet', icon: Wifi, color: '#06B6D4', desc: 'Coming Soon', active: false },
+  { id: 'insurance', label: 'Insurance', icon: Building2, color: '#6366F1', desc: 'Coming Soon', active: false },
 ];
 
 export default function ServicesPage() {
@@ -25,20 +24,22 @@ export default function ServicesPage() {
       </header>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-        {services.map((service, index) => (
-          <Link key={service.id} href={`/utility/${service.id}`} style={{ textDecoration: 'none' }}>
+        {services.map((service, index) => {
+          const content = (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileTap={service.active ? { scale: 0.95 } : {}}
               className="card"
               style={{
-                display: 'flex',
+                display: 'flex' as any,
                 flexDirection: 'column',
                 gap: '12px',
                 height: '100%',
-                cursor: 'pointer'
+                cursor: service.active ? 'pointer' : 'default',
+                opacity: service.active ? 1 : 0.6,
+                filter: service.active ? 'none' : 'grayscale(0.5)'
               }}
             >
               <div style={{
@@ -59,8 +60,16 @@ export default function ServicesPage() {
                 </p>
               </div>
             </motion.div>
-          </Link>
-        ))}
+          );
+
+          return service.active ? (
+            <Link key={service.id} href={`/utility/${service.id}`} style={{ textDecoration: 'none' }}>
+              {content}
+            </Link>
+          ) : (
+            <div key={service.id}>{content}</div>
+          );
+        })}
       </div>
 
       <BottomNav />

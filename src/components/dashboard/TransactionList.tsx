@@ -1,23 +1,26 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 const transactions = [
-  { id: 1, type: 'MTN Airtime', amount: '-₦1,000', date: 'Apr 17 • 09:32 AM', status: 'Success' },
-  { id: 2, type: 'Wallet Funding', amount: '+₦5,000', date: 'Apr 16 • 02:21 PM', status: 'Success' },
-  { id: 3, type: 'Electricity Token', amount: '-₦2,500', date: 'Apr 15 • 11:10 AM', status: 'Failed' },
-  { id: 4, type: 'Airtel Data', amount: '-₦1,500', date: 'Apr 14 • 10:45 AM', status: 'Success' },
+  { id: 1, type: 'MTN Airtime', amount: '-₦1,000', date: 'Apr 17 • 09:32 AM', status: 'Success', logo: '/brand-logos/mtn.jpg' },
+  { id: 2, type: 'Wallet Funding', amount: '+₦5,000', date: 'Apr 16 • 02:21 PM', status: 'Success', logo: '' },
+  { id: 3, type: 'Electricity Token', amount: '-₦2,500', date: 'Apr 15 • 11:10 AM', status: 'Failed', logo: '/brand-logos/IKEDC.png' },
+  { id: 4, type: 'Airtel Data', amount: '-₦1,500', date: 'Apr 14 • 10:45 AM', status: 'Success', logo: '/brand-logos/airtel.png' },
 ];
 
 export default function TransactionList() {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h3 style={{ fontSize: '16px', fontWeight: '700' }}>Recent Activity</h3>
-        <span style={{ fontSize: '13px', color: 'var(--action-green)', fontWeight: '600' }}>See all</span>
+    <div style={{ display: 'flex' as any, flexDirection: 'column' as any, gap: '16px' }}>
+      <div style={{ display: 'flex' as any, justifyContent: 'space-between' as any, alignItems: 'center' as any }}>
+        <h3 style={{ fontSize: '18px', fontWeight: '700' }}>Recent Activity</h3>
+        <Link href="/wallet" style={{ fontSize: '14px', fontWeight: '600', color: 'var(--action-green)', textDecoration: 'none' }}>
+           See all
+        </Link>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+      <div style={{ display: 'flex' as any, flexDirection: 'column' as any, gap: '12px' }}>
         {transactions.map((tx, index) => (
           <motion.div
             key={tx.id}
@@ -27,17 +30,36 @@ export default function TransactionList() {
             className="card"
             style={{ 
               display: 'flex' as any, 
-              justifyContent: 'space-between', 
-              alignItems: 'center',
+              justifyContent: 'space-between' as any, 
+              alignItems: 'center' as any,
               padding: '12px 16px'
             }}
           >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              <span style={{ fontSize: '14px', fontWeight: '600' }}>{tx.type}</span>
-              <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{tx.date}</span>
+            <div style={{ display: 'flex' as any, alignItems: 'center' as any, gap: '12px' }}>
+              <div style={{ 
+                width: '40px', 
+                height: '40px', 
+                borderRadius: '50%', 
+                backgroundColor: 'var(--background)',
+                display: 'flex' as any,
+                alignItems: 'center',
+                justifyContent: 'center',
+                overflow: 'hidden',
+                border: '1px solid rgba(0,0,0,0.05)'
+              }}>
+                {tx.logo ? (
+                  <img src={tx.logo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  <div style={{ width: '20px', height: '20px', backgroundColor: 'var(--primary-blue)', borderRadius: '4px' }} />
+                )}
+              </div>
+              <div style={{ display: 'flex' as any, flexDirection: 'column' as any, gap: '4px' }}>
+                <span style={{ fontSize: '14px', fontWeight: '600' }}>{tx.type}</span>
+                <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{tx.date}</span>
+              </div>
             </div>
             
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
+            <div style={{ display: 'flex' as any, flexDirection: 'column' as any, alignItems: 'flex-end' as any, gap: '4px' }}>
               <span style={{ 
                 fontSize: '14px', 
                 fontWeight: '700',
