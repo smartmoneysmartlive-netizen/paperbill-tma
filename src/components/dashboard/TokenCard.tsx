@@ -4,7 +4,39 @@ import { Coins, TrendingUp, Send } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 
+import { useState, useEffect } from 'react';
+import { useTelegramAuth } from '@/components/TelegramProvider';
+
 export default function TokenCard() {
+  const [balance, setBalance] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
+  const { initDataRaw } = useTelegramAuth();
+
+  useEffect(() => {
+    async function fetchPaperBalance() {
+      try {
+        const response = await fetch('/api/wallet/balance', {
+          headers: {
+            'Authorization': `Bearer ${initDataRaw}`
+          }
+        });
+        const data = await response.json();
+        if (data.success) {
+          setBalance(data.paperBalance);
+        }
+      } catch (err) {
+        console.error('Failed to fetch paper balance:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    if (initDataRaw) fetchPaperBalance();
+  }, [initDataRaw]);
+
+  // Using the mock conversion rate: 1 PAPER = ₦150 for the "≈" display
+  const estimatedNaira = (balance || 0) * 150;
+
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
@@ -23,10 +55,10 @@ export default function TokenCard() {
               <span style={{ fontSize: '12px', fontWeight: '600', color: '#0A1F44' }}>PAPER BALANCE</span>
             </div>
             <h2 style={{ fontSize: '24px', fontWeight: '700', color: '#0A1F44', marginTop: '4px' }}>
-              120 PAPER
+              {loading ? '...' : (balance || 0).toLocaleString()} PAPER
             </h2>
             <p style={{ fontSize: '13px', fontWeight: '500', color: '#0A1F44', opacity: 0.7 }}>
-              ≈ ₦ 18,000.00
+              ≈ ₦ {estimatedNaira.toLocaleString()}.00
             </p>
           </div>
           <div style={{ background: 'rgba(10, 31, 68, 0.1)', padding: '8px', borderRadius: '12px' }}>

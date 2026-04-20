@@ -64,11 +64,14 @@ model Transaction {
   userId        String
   type          TransactionType
   amount        Int
+  apiCost       Int?              // Wholesale cost for profit tracking
+  profit        Int?              // Calculated margin
   currency      Currency          @default(NGN)
   status        TransactionStatus @default(PENDING)
   reference     String            @unique
   provider      String?           // e.g., "cheapdatahub", "vtung"
   metadata      Json?
+  apiResponse   Json?             // Raw provider response for debugging
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
   
@@ -90,6 +93,23 @@ model TokenTransaction {
   createdAt     DateTime    @default(now())
   
   user          User        @relation(fields: [userId], references: [id])
+}
+
+model AuditLog {
+  id            String   @id @default(uuid())
+  userId        String?
+  action        String   // e.g. "WALLET_LOCK", "VTU_API_CALL"
+  level         LogLevel @default(INFO)
+  metadata      Json?    // Request/Response payloads
+  ipAddress     String?
+  createdAt     DateTime @default(now())
+}
+
+enum LogLevel {
+  INFO
+  WARN
+  ERROR
+  CRITICAL
 }
 
 model SystemSetting {
