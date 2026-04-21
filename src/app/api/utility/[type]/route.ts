@@ -30,7 +30,7 @@ export async function POST(
       userId: user.id, // Verified DB User ID
       amount: Number(amount),
       currency: currency as 'NGN' | 'PAPER',
-      planId: planId ? Number(planId) : undefined,
+      planId: planId || undefined,
       payload: { phone, provider, ...metadata }
     });
 

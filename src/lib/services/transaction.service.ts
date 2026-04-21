@@ -7,7 +7,7 @@ export type TransactionRecord = {
   type: 'airtime' | 'data' | 'electricity' | 'tv' | 'education';
   userId: string; // This is the Prisma User ID
   amount: number; // Input amount in Naira
-  planId?: number;
+  planId?: string | number;
   currency: 'NGN' | 'PAPER';
   payload: any;
 };

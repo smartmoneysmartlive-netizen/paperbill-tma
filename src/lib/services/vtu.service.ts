@@ -67,7 +67,7 @@ export class VTUService {
   /**
    * Orchestrated Data Purchase
    */
-  static async buyData(networkId: number, phone: string, planId: number, amount: number): Promise<VTUResponse> {
+  static async buyData(networkId: number, phone: string, planId: string | number, amount: number): Promise<VTUResponse> {
     const networkName = this.NETWORK_NAME_MAP[networkId] || 'mtn';
 
     // 1. Try VTUGate (primary)

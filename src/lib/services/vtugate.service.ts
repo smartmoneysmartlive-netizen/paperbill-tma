@@ -13,7 +13,7 @@ export class VTUGateService {
   /**
    * Universal fetch for VTUGate
    */
-  public static async request(endpoint: string, params: Record<string, any>, method: 'POST' | 'GET' = 'POST'): Promise<VTUGateResponse> {
+  private static async request(endpoint: string, params: Record<string, any>, method: 'POST' | 'GET' = 'POST'): Promise<VTUGateResponse> {
     try {
       let url = `${this.BASE_URL}${endpoint}`;
       const options: any = {
@@ -32,9 +32,7 @@ export class VTUGateService {
       }
 
       const response = await fetch(url, options);
-      const data = await response.json();
-      console.log(`[VTUGate-DEBUG] ${method} Response (${endpoint}):`, JSON.stringify(data));
-      return data;
+      return await response.json();
     } catch (err) {
       console.error(`[VTUGate] Request Error (${endpoint}):`, err);
       return { status: 0, message: 'VTUGate connection failed' };
