@@ -98,6 +98,10 @@ export class VTUService {
       });
       const data = await resp.json();
       const success = data.status === "true";
+      
+      if (!success) {
+        console.warn(`[Orchestrator] CheapDataHub Data failed: ${data.message || 'Unknown error'}`);
+      }
 
       return {
         success,
@@ -105,7 +109,8 @@ export class VTUService {
         reference: data.transaction_id || data.reference,
         provider: success ? 'cheapdatahub' : 'failed'
       };
-    } catch (err) {
+    } catch (err: any) {
+      console.error(`[Orchestrator] CheapDataHub Error:`, err.message);
       return { success: false, message: 'Data provider failed', provider: 'failed' };
     }
   }

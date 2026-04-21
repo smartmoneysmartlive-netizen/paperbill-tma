@@ -12,7 +12,16 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const endpoints = ['/fetchplans', '/fetchservicedetails', '/fetchvariations', '/fetchserviceproducts'];
+    const endpoints = [
+      '/fetchplans', 
+      '/fetchservicedetails', 
+      '/fetchvariations', 
+      '/fetchserviceproducts',
+      '/getvariations',
+      '/fetchallplans',
+      '/service_plans',
+      '/fetch_variations'
+    ];
     const results: any = {};
 
     for (const ep of endpoints) {
