@@ -13,7 +13,7 @@ export class VTUGateService {
   /**
    * Universal fetch for VTUGate
    */
-  private static async request(endpoint: string, params: Record<string, any>): Promise<VTUGateResponse> {
+  public static async request(endpoint: string, params: Record<string, any>): Promise<VTUGateResponse> {
     try {
       const response = await fetch(`${this.BASE_URL}${endpoint}`, {
         method: 'POST',
