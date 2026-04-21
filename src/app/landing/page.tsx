@@ -16,8 +16,12 @@ export default function LandingPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // 0. TMA Self-Correction: If we detect we are in a TMA, jump to dashboard immediately
-    if (typeof window !== 'undefined' && (window as any).Telegram?.WebApp?.initData) {
+    // 0. TMA Super-Detection: Check object AND URL hash for instant redirect
+    const isInsideTelegram = 
+      (typeof window !== 'undefined' && (window as any).Telegram?.WebApp?.initData) ||
+      (typeof window !== 'undefined' && window.location.hash.includes('tgWebAppData'));
+
+    if (isInsideTelegram) {
       router.replace('/');
       return;
     }

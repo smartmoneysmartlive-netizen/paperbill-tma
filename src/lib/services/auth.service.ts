@@ -41,10 +41,15 @@ export class AuthService {
     const hash = urlParams.get('hash');
     const authDate = parseInt(urlParams.get('auth_date') || '0', 10);
 
-    // 1. Basic Expiry Check (24 Hours)
+    // 1. Basic Expiry Check (48 Hours for stability during launch)
     const now = Math.floor(Date.now() / 1000);
-    if (now - authDate > 86400) {
+    if (now - authDate > 172800) {
+      console.error(`[Auth] Session Expired: authDate=${authDate}, now=${now}, diff=${now - authDate}`);
       throw new Error('Session expired. Please restart the app.');
+    }
+
+    if (!hash) {
+      throw new Error('Unauthorized: Hash missing from initData.');
     }
 
     // 2. Prepare data_check_string

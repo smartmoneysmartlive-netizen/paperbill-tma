@@ -79,32 +79,45 @@ export interface TelegramAuthResult {
  * Uses a failsafe to return mock data if not in a Telegram environment
  */
 export function useTelegramAuth(): TelegramAuthResult {
-  // We use the SDK's environment check
-  const inTMA = isTMA();
+  // 1. Source of Truth: Check if the current URL actually contains Telegram data
+  // We check this BEFORE the SDK to avoid detection lag on fast devices.
+  const hasHashData = typeof window !== 'undefined' && window.location.hash.includes('tgWebAppData');
+  const isProd = typeof window !== 'undefined' && window.location.hostname.includes('paperbill.online');
 
-  // REAL FIX: Since the SDK hooks are strict, we use the raw SDK 
-  // retrieval logic if we want to be safe across environments.
-  
+  // We use the SDK's environment check as a secondary indicator
+  const sdkInTMA = isTMA();
+  const inTMA = hasHashData || sdkInTMA;
+
   const rawInitData = useMemo(() => {
-    if (!inTMA) return MOCK_LAUNCH_PARAMS.initDataRaw;
-    try {
-      // Logic from useRawInitData
-      return window.location.hash.slice(1); 
-    } catch {
-      return MOCK_LAUNCH_PARAMS.initDataRaw;
+    // SECURITY: Never use mock data in production
+    if (!inTMA || isProd) {
+       if (isProd && !hasHashData) return ''; // Force empty if prod and no hash
+       if (!inTMA) return MOCK_LAUNCH_PARAMS.initDataRaw;
     }
-  }, [inTMA]);
+
+    try {
+      // Logic from useRawInitData - cleaning up the hash
+      const hash = window.location.hash.slice(1);
+      return hash.includes('tgWebAppData') ? hash : MOCK_LAUNCH_PARAMS.initDataRaw;
+    } catch {
+      return isProd ? '' : MOCK_LAUNCH_PARAMS.initDataRaw;
+    }
+  }, [inTMA, hasHashData, isProd]);
 
   const user = useMemo(() => {
-    if (!inTMA) return MOCK_LAUNCH_PARAMS.initData.user;
+    if (!inTMA || isProd) {
+       if (isProd && !hasHashData) return null;
+       if (!inTMA) return MOCK_LAUNCH_PARAMS.initData.user;
+    }
+
     try {
       const params = new URLSearchParams(window.location.hash.slice(1));
       const userJson = params.get('user');
-      return userJson ? JSON.parse(userJson) : MOCK_LAUNCH_PARAMS.initData.user;
+      return userJson ? JSON.parse(userJson) : null;
     } catch {
-      return MOCK_LAUNCH_PARAMS.initData.user;
+      return isProd ? null : MOCK_LAUNCH_PARAMS.initData.user;
     }
-  }, [inTMA]);
+  }, [inTMA, hasHashData, isProd]);
 
   return useMemo(() => ({
     initDataRaw: rawInitData,
