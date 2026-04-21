@@ -16,10 +16,14 @@ export default function LandingPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // 0. TMA Super-Detection: Check object AND URL hash for instant redirect
+    // 0. TMA Triple-Check Detection:
+    // Check 1: Telegram WebApp Object exists
+    // Check 2: Raw Hash contains auth data (fastest)
+    // Check 3: Check for user agent or platform indicators
     const isInsideTelegram = 
       (typeof window !== 'undefined' && (window as any).Telegram?.WebApp?.initData) ||
-      (typeof window !== 'undefined' && window.location.hash.includes('tgWebAppData'));
+      (typeof window !== 'undefined' && window.location.hash.includes('tgWebAppData')) ||
+      (typeof window !== 'undefined' && (window as any).Telegram?.WebApp?.platform !== 'unknown');
 
     if (isInsideTelegram) {
       router.replace('/');

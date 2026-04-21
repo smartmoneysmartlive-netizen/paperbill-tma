@@ -12,10 +12,14 @@ export default function LoginPage() {
   const widgetContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // 0. TMA Super-Detection: Bypass login if already in Telegram (Object + Hash check)
+    // 0. TMA Triple-Check Detection:
+    // Check 1: Telegram WebApp Object exists
+    // Check 2: Raw Hash contains auth data (fastest)
+    // Check 3: Check for user agent or platform indicators
     const isInsideTelegram = 
       (typeof window !== 'undefined' && (window as any).Telegram?.WebApp?.initData) ||
-      (typeof window !== 'undefined' && window.location.hash.includes('tgWebAppData'));
+      (typeof window !== 'undefined' && window.location.hash.includes('tgWebAppData')) ||
+      (typeof window !== 'undefined' && (window as any).Telegram?.WebApp?.platform !== 'unknown');
 
     if (isInsideTelegram) {
       router.replace('/');
