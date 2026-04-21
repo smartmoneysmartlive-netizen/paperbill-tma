@@ -13,6 +13,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const endpoints = [
+      '/fetchdataplans',
       '/fetchplans', '/fetchvariations', '/getplans', 
       '/getvariations', '/variations', '/plans', 
       '/fetchservicedetails', '/servicedetails'
