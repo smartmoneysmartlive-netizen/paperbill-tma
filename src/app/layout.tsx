@@ -8,6 +8,7 @@ export const metadata: Metadata = {
 };
 
 import Script from "next/script";
+import ResponsiveShell from "@/components/layout/ResponsiveShell";
 
 export default function RootLayout({
   children,
