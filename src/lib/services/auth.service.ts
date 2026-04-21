@@ -66,4 +66,54 @@ export class AuthService {
 
     return JSON.parse(userJson) as TelegramUser;
   }
+
+  /**
+   * Validates user data from the Telegram Login Widget (Browser-based)
+   * @param data The user data object from the widget
+   * @returns The user object if valid, throws error if invalid
+   */
+  static validateWebLogin(data: any) {
+    const botToken = process.env.NEXT_PUBLIC_BOT_TOKEN;
+    if (!botToken) throw new Error('BOT_TOKEN is not configured.');
+
+    const hash = data.hash;
+    if (!hash) throw new Error('Authentication hash missing.');
+
+    // 1. Prepare data_check_string
+    const params: string[] = [];
+    Object.keys(data).forEach(key => {
+      if (key !== 'hash' && data[key] !== undefined) {
+        params.push(`${key}=${data[key]}`);
+      }
+    });
+    
+    const dataCheckString = params.sort().join('\n');
+
+    // 2. Secret Key = SHA256 of bot token (Standard Login Widget Algo)
+    const secretKey = createHmac('sha256', 'sha256') // Note: In this algo, the second arg is usually just 'sha256' string or similar depending on implementation, but official Telegram docs say: 
+    // "The secret_key is an HMAC-SHA-256 signature of the bot's token with the constant string "WebAppData" as the key." 
+    // Wait, that's for TMA. 
+    // FOR WIDGET: "The secret_key should be the SHA256 hash of the bot's token."
+    
+    const crypto = require('crypto');
+    const secretKeyWidget = crypto.createHash('sha256').update(botToken).digest();
+
+    // 3. Calculate HMAC
+    const calculatedHash = crypto.createHmac('sha256', secretKeyWidget)
+      .update(dataCheckString)
+      .digest('hex');
+
+    if (calculatedHash !== hash) {
+      throw new Error('Unauthorized: Invalid web login signature.');
+    }
+
+    return {
+      id: Number(data.id),
+      first_name: data.first_name,
+      last_name: data.last_name,
+      username: data.username,
+      photo_url: data.photo_url,
+      auth_date: Number(data.auth_date)
+    } as TelegramUser;
+  }
 }

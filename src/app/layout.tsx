@@ -7,6 +7,8 @@ export const metadata: Metadata = {
   description: "Load money, buy data, and earn rewards effortlessly.",
 };
 
+import ResponsiveShell from "@/components/layout/ResponsiveShell";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -14,9 +16,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body suppressHydrationWarning style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
+      <body suppressHydrationWarning className="antialiased">
         <Providers>
-          {children}
+          <ResponsiveShell>
+            {children}
+          </ResponsiveShell>
         </Providers>
       </body>
     </html>

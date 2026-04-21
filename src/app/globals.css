@@ -26,12 +26,12 @@
   --radius-standard: 16px;
   --radius-small: 12px;
   --spacing-base: 8px;
-  --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.05);
-  
-  /* Defaults */
-  --background: var(--bg-light);
-  --foreground: var(--text-primary);
   --card-bg: var(--card-light);
+  --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+  /* Responsive Widths */
+  --sidebar-width: 260px;
+  --max-content-width: 1100px;
 }
 
 /* Manual Dark Mode Class */
@@ -137,4 +137,63 @@ a {
   background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
   background-size: 200% 100%;
   animation: shimmer 2s infinite;
+}
+
+/* Responsive Utilities */
+.mobile-only {
+  display: block !important;
+}
+
+.desktop-only {
+  display: none !important;
+}
+
+@media (min-width: 768px) {
+  .mobile-only {
+    display: none !important;
+  }
+  .desktop-only {
+    display: block !important;
+  }
+  
+  .app-layout {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    justify-content: center;
+  }
+  
+  /* Added for Landing Page horizontal stability */
+  .max-viewport {
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+  
+  .main-content {
+    flex: 1;
+    margin-left: var(--sidebar-width);
+    padding: 32px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .content-container {
+    width: 100%;
+    max-width: var(--max-content-width);
+  }
+}
+
+/* Fallback for pages not using the container yet */
+.page-container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 24px 16px 100px;
+}
+
+@media (min-width: 768px) {
+  .page-container {
+    max-width: var(--max-content-width);
+    padding: 0;
+  }
 }

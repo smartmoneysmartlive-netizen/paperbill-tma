@@ -11,14 +11,10 @@ import Link from 'next/link';
 
 export default function Home() {
   return (
-    <main style={{ 
-      minHeight: '100vh', 
-      padding: '24px 16px 100px',
+    <div className="page-container" style={{ 
       display: 'flex',
       flexDirection: 'column',
-      gap: '24px',
-      maxWidth: '500px',
-      margin: '0 auto'
+      gap: '24px'
     }}>
       {/* Header */}
       <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -64,12 +60,12 @@ export default function Home() {
           style={{ 
             backgroundColor: 'var(--primary-blue)', 
             color: 'white',
-            display: 'flex' as any,
+            display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
             border: 'none',
             cursor: 'pointer'
-          }}
+          } as any}
         >
           <div>
             <h4 style={{ fontSize: '15px', fontWeight: '700' }}>🔥 Pay with PAPER</h4>
@@ -91,8 +87,7 @@ export default function Home() {
       <TransactionList />
 
       {/* Navigation */}
-      <BottomNav />
-    </main>
+    </div>
   );
 }
 

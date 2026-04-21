@@ -1,15 +1,16 @@
 'use client';
 
 import { useTheme } from '@/components/ThemeProvider';
-import BottomNav from '@/components/dashboard/BottomNav';
 import { Moon, Sun, Shield, HelpCircle, LogOut, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTelegramAuth } from '@/components/TelegramProvider';
 
 export default function ProfilePage() {
   const { theme, toggleTheme } = useTheme();
+  const { user } = useTelegramAuth();
 
   return (
-    <main style={{ padding: '24px 16px 100px', maxWidth: '500px', margin: '0 auto' }}>
+    <div className="page-container">
       <header style={{ marginBottom: '32px', textAlign: 'center' }}>
         <div style={{ 
           width: '80px', 
@@ -24,10 +25,14 @@ export default function ProfilePage() {
           fontWeight: '700',
           color: 'white'
         }}>
-          P
+          {user?.first_name?.[0] || 'U'}
         </div>
-        <h1 style={{ fontSize: '20px', fontWeight: '700' }}>Praise Durojaiye</h1>
-        <p style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>@praise_paperbill</p>
+        <h1 style={{ fontSize: '20px', fontWeight: '700' }}>
+          {user?.first_name} {user?.last_name || ''}
+        </h1>
+        <p style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>
+          {user?.username ? `@${user.username}` : 'Smart Wallet User'}
+        </p>
       </header>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -49,7 +54,7 @@ export default function ProfilePage() {
               position: 'relative',
               cursor: 'pointer',
               padding: '2px'
-            }}
+            } as any}
           >
             <motion.div 
               animate={{ x: theme === 'dark' ? 24 : 0 }}
@@ -60,7 +65,7 @@ export default function ProfilePage() {
                 borderRadius: '50%',
                 backgroundColor: 'white',
                 boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
-              }}
+              } as any}
             />
           </motion.div>
         </section>
@@ -70,9 +75,7 @@ export default function ProfilePage() {
         <MenuItem icon={HelpCircle} label="Help & Support" color="#F59E0B" />
         <MenuItem icon={LogOut} label="Logout" color="#EF4444" hideArrow />
       </div>
-
-      <BottomNav />
-    </main>
+    </div>
   );
 }
 

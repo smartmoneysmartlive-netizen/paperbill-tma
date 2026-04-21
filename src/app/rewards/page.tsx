@@ -7,7 +7,7 @@ import { motion } from 'framer-motion';
 
 export default function RewardsPage() {
   return (
-    <main style={{ padding: '24px 16px 100px', maxWidth: '500px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+    <div className="page-container" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <header>
         <h1 style={{ fontSize: '24px', fontWeight: '700' }}>Rewards</h1>
         <p style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>Earn PAPER and exclusive discounts</p>
@@ -60,9 +60,7 @@ export default function RewardsPage() {
            Copy Link
         </button>
       </div>
-
-      <BottomNav />
-    </main>
+    </div>
   );
 }
 

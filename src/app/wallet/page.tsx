@@ -47,7 +47,7 @@ export default function WalletPage() {
   };
 
   return (
-    <main style={{ padding: '24px 16px 100px', maxWidth: '500px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+    <div className="page-container" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <header>
         <h1 style={{ fontSize: '24px', fontWeight: '700' }}>Wallet</h1>
         <p style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>Manage your funds and history</p>
@@ -126,9 +126,7 @@ export default function WalletPage() {
       <section>
          <TransactionList />
       </section>
-
-      <BottomNav />
-    </main>
+    </div>
   );
 }
 

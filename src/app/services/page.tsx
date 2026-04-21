@@ -17,13 +17,13 @@ const services = [
 
 export default function ServicesPage() {
   return (
-    <main style={{ padding: '24px 16px 100px', maxWidth: '500px', margin: '0 auto' }}>
+    <div className="page-container">
       <header style={{ marginBottom: '24px' }}>
         <h1 style={{ fontSize: '24px', fontWeight: '700' }}>All Services</h1>
         <p style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>Quality utility payments at your fingertips</p>
       </header>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '16px' }}>
         {services.map((service, index) => {
           const content = (
             <motion.div
@@ -33,14 +33,14 @@ export default function ServicesPage() {
               whileTap={service.active ? { scale: 0.95 } : {}}
               className="card"
               style={{
-                display: 'flex' as any,
+                display: 'flex',
                 flexDirection: 'column',
                 gap: '12px',
                 height: '100%',
                 cursor: service.active ? 'pointer' : 'default',
                 opacity: service.active ? 1 : 0.6,
                 filter: service.active ? 'none' : 'grayscale(0.5)'
-              }}
+              } as any}
             >
               <div style={{
                 width: '44px',
@@ -71,8 +71,6 @@ export default function ServicesPage() {
           );
         })}
       </div>
-
-      <BottomNav />
-    </main>
+    </div>
   );
 }
