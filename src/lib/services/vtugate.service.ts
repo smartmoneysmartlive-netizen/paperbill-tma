@@ -13,18 +13,27 @@ export class VTUGateService {
   /**
    * Universal fetch for VTUGate
    */
-  public static async request(endpoint: string, params: Record<string, any>): Promise<VTUGateResponse> {
+  public static async request(endpoint: string, params: Record<string, any>, method: 'POST' | 'GET' = 'POST'): Promise<VTUGateResponse> {
     try {
-      const response = await fetch(`${this.BASE_URL}${endpoint}`, {
-        method: 'POST',
+      let url = `${this.BASE_URL}${endpoint}`;
+      const options: any = {
+        method,
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
           'Authorization': `Bearer ${this.API_KEY}`
-        },
-        body: new URLSearchParams(params)
-      });
+        }
+      };
+
+      if (method === 'POST') {
+        options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+        options.body = new URLSearchParams(params);
+      } else {
+        const query = new URLSearchParams(params).toString();
+        if (query) url += `?${query}`;
+      }
+
+      const response = await fetch(url, options);
       const data = await response.json();
-      console.log(`[VTUGate-DEBUG] Response (${endpoint}):`, JSON.stringify(data));
+      console.log(`[VTUGate-DEBUG] ${method} Response (${endpoint}):`, JSON.stringify(data));
       return data;
     } catch (err) {
       console.error(`[VTUGate] Request Error (${endpoint}):`, err);
