@@ -122,6 +122,6 @@ export class VTUGateService {
    * Fetch variations/plans for a service
    */
   static async getPlans(serviceId: string) {
-    return await this.request('/fetchplans', { service_id: serviceId });
+    return await this.request('/fetchdataplans', { service_id: serviceId });
   }
 }
