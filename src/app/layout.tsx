@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description: "Load money, buy data, and earn rewards effortlessly.",
 };
 
-import ResponsiveShell from "@/components/layout/ResponsiveShell";
+import Script from "next/script";
 
 export default function RootLayout({
   children,
@@ -16,6 +16,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <Script src="https://telegram.org/js/telegram-web-app.js" strategy="beforeInteractive" />
+      </head>
       <body suppressHydrationWarning className="antialiased">
         <Providers>
           <ResponsiveShell>
