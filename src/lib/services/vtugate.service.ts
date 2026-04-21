@@ -108,4 +108,11 @@ export class VTUGateService {
         phone_number: phone
      });
   }
+
+  /**
+   * Fetch variations/plans for a service
+   */
+  static async getPlans(serviceId: string) {
+    return await this.request('/fetchplans', { service_id: serviceId });
+  }
 }
