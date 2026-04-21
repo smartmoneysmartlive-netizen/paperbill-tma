@@ -90,45 +90,46 @@ export interface TelegramAuthResult {
  * Uses a failsafe to return mock data if not in a Telegram environment
  */
 export function useTelegramAuth(): TelegramAuthResult {
-  // 1. Source of Truth: Check if the current URL actually contains Telegram data
-  // We check this BEFORE the SDK to avoid detection lag on fast devices.
-  const hasHashData = typeof window !== 'undefined' && window.location.hash.includes('tgWebAppData');
+  // 1. Source of Truth: Check for Native SDK first, then URL Hash
   const isProd = typeof window !== 'undefined' && window.location.hostname.includes('paperbill.online');
-
-  // We use the SDK's environment check as a secondary indicator
-  const sdkInTMA = isTMA();
-  const inTMA = hasHashData || sdkInTMA;
+  const tgWindow = typeof window !== 'undefined' ? (window as any).Telegram?.WebApp : null;
+  
+  // High-reliability detection
+  const hasNativeData = !!tgWindow?.initData;
+  const hasHashData = typeof window !== 'undefined' && window.location.hash.includes('tgWebAppData');
+  const inTMA = hasNativeData || hasHashData || isTMA();
 
   const rawInitData = useMemo(() => {
-    // SECURITY: Never use mock data in production
-    if (!inTMA || isProd) {
-       if (isProd && !hasHashData) return ''; // Force empty if prod and no hash
-       if (!inTMA) return MOCK_LAUNCH_PARAMS.initDataRaw;
-    }
+    // Priority 1: Native SDK Object (Most reliable)
+    if (hasNativeData) return tgWindow.initData;
 
-    try {
-      // Logic from useRawInitData - cleaning up the hash
-      const hash = window.location.hash.slice(1);
-      return hash.includes('tgWebAppData') ? hash : MOCK_LAUNCH_PARAMS.initDataRaw;
-    } catch {
-      return isProd ? '' : MOCK_LAUNCH_PARAMS.initDataRaw;
-    }
-  }, [inTMA, hasHashData, isProd]);
+    // Priority 2: URL Hash (Fallback)
+    if (hasHashData) return window.location.hash.slice(1);
+
+    // Priority 3: Mock data (Development Only)
+    if (!isProd) return MOCK_LAUNCH_PARAMS.initDataRaw;
+
+    return '';
+  }, [inTMA, hasNativeData, hasHashData, isProd, tgWindow]);
 
   const user = useMemo(() => {
-    if (!inTMA || isProd) {
-       if (isProd && !hasHashData) return null;
-       if (!inTMA) return MOCK_LAUNCH_PARAMS.initData.user;
+    // Priority 1: Native SDK User object
+    if (tgWindow?.initDataUnsafe?.user) return tgWindow.initDataUnsafe.user;
+
+    // Priority 2: Parse from Hash
+    if (hasHashData) {
+      try {
+        const params = new URLSearchParams(window.location.hash.slice(1));
+        const userJson = params.get('user');
+        if (userJson) return JSON.parse(userJson);
+      } catch (e) {}
     }
 
-    try {
-      const params = new URLSearchParams(window.location.hash.slice(1));
-      const userJson = params.get('user');
-      return userJson ? JSON.parse(userJson) : null;
-    } catch {
-      return isProd ? null : MOCK_LAUNCH_PARAMS.initData.user;
-    }
-  }, [inTMA, hasHashData, isProd]);
+    // Priority 3: Mock Data (Development Only)
+    if (!isProd) return MOCK_LAUNCH_PARAMS.initData.user;
+
+    return null;
+  }, [inTMA, hasNativeData, hasHashData, isProd, tgWindow]);
 
   return useMemo(() => ({
     initDataRaw: rawInitData,
