@@ -31,6 +31,9 @@ export function TelegramProvider({ children }: PropsWithChildren) {
     setIsClient(true);
   }, []);
 
+  // Trigger sync on initialization
+  useSyncUser();
+
   if (!isClient) return <>{children}</>;
 
   return (
@@ -38,6 +41,32 @@ export function TelegramProvider({ children }: PropsWithChildren) {
       {children}
     </div>
   );
+}
+
+/**
+ * Custom hook to trigger the user sync process on app start
+ */
+function useSyncUser() {
+  const { initDataRaw, user } = useTelegramAuth();
+  
+  useEffect(() => {
+    if (!initDataRaw || initDataRaw.includes('mock_hash')) return;
+
+    const sync = async () => {
+      try {
+        await fetch('/api/auth/sync', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ initDataRaw })
+        });
+        console.log('[TMA] User synchronized successfully');
+      } catch (err) {
+        console.error('[TMA] Sync Error:', err);
+      }
+    };
+
+    sync();
+  }, [initDataRaw]);
 }
 
 export interface TelegramAuthResult {

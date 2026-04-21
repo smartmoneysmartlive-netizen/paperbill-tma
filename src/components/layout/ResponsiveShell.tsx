@@ -19,13 +19,13 @@ export default function ResponsiveShell({ children }: PropsWithChildren) {
   const isPublicPage = pathname === '/landing' || pathname === '/login';
 
   return (
-    <div className="app-layout">
+    <div className={`app-layout ${isPublicPage ? 'center-layout' : 'flex-start'}`}>
       {/* Sidebar - Only rendered on desktop AND NOT on public pages */}
       {isDesktop && !isPublicPage && <Sidebar />}
 
       {/* Main Content Area */}
       <main className={isDesktop && !isPublicPage ? 'main-content' : ''} style={!isDesktop && !isPublicPage ? { paddingBottom: '100px' } : {}}>
-        <div className="content-container">
+        <div className={!isPublicPage ? 'w-full max-w-[1600px] mx-auto px-4 md:px-8' : 'w-full'}>
           {children}
         </div>
       </main>

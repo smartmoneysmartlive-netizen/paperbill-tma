@@ -160,6 +160,11 @@ a {
     display: flex;
     min-height: 100vh;
     width: 100%;
+    justify-content: flex-start; /* Expand dashboard to full width */
+  }
+  
+  /* Centering utility specifically for public marketing pages */
+  .center-layout {
     justify-content: center;
   }
   

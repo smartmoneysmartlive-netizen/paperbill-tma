@@ -20,10 +20,16 @@ export function middleware(request: NextRequest) {
 
   // 2. Auth Detection
   const sessionToken = request.cookies.get(SESSION_COOKIE_NAME)?.value;
-  const isTMA = searchParams.has('tgWebAppData') || request.headers.get('user-agent')?.includes('Telegram');
+  
+  // More inclusive TMA detection (checking more params and headers)
+  const isTMA = 
+    searchParams.has('tgWebAppData') || 
+    searchParams.has('tgWebAppPlatform') ||
+    request.headers.get('user-agent')?.toLowerCase().includes('telegram') ||
+    request.headers.get('sec-ch-ua')?.toLowerCase().includes('telegram');
 
   // 3. Logic for Home/App Routes
-  // If no session AND not in a TMA environment -> Landing Page
+  // If no session AND it's definitely NOT a TMA -> Landing Page
   if (!sessionToken && !isTMA) {
     const url = request.nextUrl.clone();
     url.pathname = '/landing';

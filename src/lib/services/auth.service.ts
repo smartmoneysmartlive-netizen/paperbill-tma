@@ -1,4 +1,6 @@
+import { prisma } from '@/lib/prisma';
 import { createHmac } from 'crypto';
+import { UserService } from './user.service';
 
 export interface TelegramUser {
   id: number;
@@ -11,12 +13,25 @@ export interface TelegramUser {
 
 export class AuthService {
   /**
+   * Synchronizes a Telegram user with the local database
+   * @param initDataRaw The raw initialization string from Telegram
+   * @returns The synchronized DB user object
+   */
+  static async syncUser(initDataRaw: string) {
+    // 1. Validate the string and extract the user
+    const telegramUser = this.validateInitData(initDataRaw);
+    
+    // 2. Delegate to UserService to handle the DB Upsert and Wallet creation
+    return await UserService.getOrCreateUser(telegramUser);
+  }
+
+  /**
    * Validates the initDataRaw from Telegram using HMAC-SHA256
    * @param initDataRaw The raw string from Telegram.WebApp.initData
    * @returns The parsed user object if valid, throws error if invalid
    */
   static validateInitData(initDataRaw: string) {
-    const botToken = process.env.NEXT_PUBLIC_BOT_TOKEN; // Recommendation: Rename to BOT_TOKEN in .env for safety
+    const botToken = process.env.NEXT_PUBLIC_BOT_TOKEN;
     
     if (!botToken) {
       throw new Error('BOT_TOKEN is not configured on the server.');
@@ -90,11 +105,6 @@ export class AuthService {
     const dataCheckString = params.sort().join('\n');
 
     // 2. Secret Key = SHA256 of bot token (Standard Login Widget Algo)
-    const secretKey = createHmac('sha256', 'sha256') // Note: In this algo, the second arg is usually just 'sha256' string or similar depending on implementation, but official Telegram docs say: 
-    // "The secret_key is an HMAC-SHA-256 signature of the bot's token with the constant string "WebAppData" as the key." 
-    // Wait, that's for TMA. 
-    // FOR WIDGET: "The secret_key should be the SHA256 hash of the bot's token."
-    
     const crypto = require('crypto');
     const secretKeyWidget = crypto.createHash('sha256').update(botToken).digest();
 

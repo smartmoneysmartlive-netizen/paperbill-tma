@@ -7,9 +7,13 @@ import TransactionList from '@/components/dashboard/TransactionList';
 import BottomNav from '@/components/dashboard/BottomNav';
 import { Bell, Search } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTelegramAuth } from '@/components/TelegramProvider';
 import Link from 'next/link';
 
 export default function Home() {
+  const { user } = useTelegramAuth();
+  const firstName = user?.first_name || 'Guest';
+
   return (
     <div className="page-container" style={{ 
       display: 'flex',
@@ -20,7 +24,7 @@ export default function Home() {
       <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           <span style={{ fontSize: '14px', color: 'var(--text-secondary)', fontWeight: '500' }}>Welcome back,</span>
-          <h1 style={{ fontSize: '20px', fontWeight: '700' }}>Praise 👋</h1>
+          <h1 style={{ fontSize: '20px', fontWeight: '700' }}>{firstName} 👋</h1>
         </div>
         <div style={{ display: 'flex', gap: '12px' }}>
           <div style={iconBtnStyle}>

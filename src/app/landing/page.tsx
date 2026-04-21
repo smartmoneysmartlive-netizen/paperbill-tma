@@ -7,13 +7,21 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loadingAuth, setLoadingAuth] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
+    // 0. TMA Self-Correction: If we detect we are in a TMA, jump to dashboard immediately
+    if (typeof window !== 'undefined' && (window as any).Telegram?.WebApp?.initData) {
+      router.replace('/');
+      return;
+    }
+
     // 1. Scroll Detection
     const handleScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener('scroll', handleScroll);

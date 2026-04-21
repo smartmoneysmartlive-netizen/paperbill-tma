@@ -12,6 +12,12 @@ export default function LoginPage() {
   const widgetContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // 0. TMA Self-Correction: Bypass login if already in Telegram
+    if (typeof window !== 'undefined' && (window as any).Telegram?.WebApp?.initData) {
+      router.replace('/');
+      return;
+    }
+
     // 1. Define the callback for the Telegram widget
     (window as any).onTelegramAuth = async (user: any) => {
       setLoading(true);
