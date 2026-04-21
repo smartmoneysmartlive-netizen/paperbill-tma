@@ -10,7 +10,9 @@ export async function POST(request: NextRequest) {
     const { amount } = await request.json(); // Amount in Naira
     
     // Initialize with Paystack (Wait for the URL)
-    const result = await PaystackService.initializeDeposit(user.id, user.username + '@paperbill.tma', amount);
+    // Use telegramId for email if username is missing to guarantee a valid email format for Paystack
+    const userEmail = (user.username || user.telegramId.toString()) + '@paperbill.online';
+    const result = await PaystackService.initializeDeposit(user.id, userEmail, amount);
 
     if (result.status && result.data) {
       return NextResponse.json({ 
