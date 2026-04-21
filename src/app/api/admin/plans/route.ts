@@ -19,8 +19,9 @@ export async function GET(request: NextRequest) {
       try {
         const data = await VTUGateService.request(ep, { service_id: serviceId });
         results[ep] = data;
-        // Using loose equality to handle both boolean (true) and number (1) from API
-        if (data.status == true || data.status == 1) {
+        // Cast to any to bypass strict TypeScript overlap check for debug tool
+        const status = data.status as any;
+        if (status == true || status == 1) {
           return NextResponse.json({ working_endpoint: ep, data });
         }
       } catch (e) {
