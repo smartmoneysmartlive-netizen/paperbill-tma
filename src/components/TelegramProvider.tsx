@@ -50,23 +50,34 @@ function useSyncUser() {
   const { initDataRaw, user } = useTelegramAuth();
   
   useEffect(() => {
-    if (!initDataRaw || initDataRaw.includes('mock_hash')) return;
+    // SECURITY: Don't sync if no data or if it's the mock hash
+    if (!initDataRaw || initDataRaw.includes('mock_hash')) {
+      console.log('[TMA-Sync] Skipping sync: No real Telegram data found.');
+      return;
+    }
 
     const sync = async () => {
       try {
-        await fetch('/api/auth/sync', {
+        console.log('[TMA-Sync] Attempting synchronization for user:', user?.id);
+        const res = await fetch('/api/auth/sync', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ initDataRaw })
         });
-        console.log('[TMA] User synchronized successfully');
+        
+        if (!res.ok) {
+           const data = await res.json();
+           console.error('[TMA-Sync] Server returned error:', data.message);
+        } else {
+           console.log('[TMA-Sync] User synchronized successfully with DB');
+        }
       } catch (err) {
-        console.error('[TMA] Sync Error:', err);
+        console.error('[TMA-Sync] Network Error:', err);
       }
     };
 
     sync();
-  }, [initDataRaw]);
+  }, [initDataRaw, user?.id]);
 }
 
 export interface TelegramAuthResult {

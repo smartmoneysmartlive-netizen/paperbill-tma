@@ -22,7 +22,11 @@ export class AuthService {
     const telegramUser = this.validateInitData(initDataRaw);
     
     // 2. Delegate to UserService to handle the DB Upsert and Wallet creation
-    return await UserService.getOrCreateUser(telegramUser);
+    const user = await UserService.getOrCreateUser(telegramUser);
+    
+    console.log(`[AUTH-SUCCESS] User Sync'd: ID=${user.telegramId}, Name=${user.firstName}`);
+    
+    return user;
   }
 
   /**

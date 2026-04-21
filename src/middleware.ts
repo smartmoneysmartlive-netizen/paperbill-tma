@@ -29,12 +29,14 @@ export function middleware(request: NextRequest) {
     request.headers.get('sec-ch-ua')?.toLowerCase().includes('telegram');
 
   // 3. Logic for Home/App Routes
-  // If no session AND it's definitely NOT a TMA -> Landing Page
-  if (!sessionToken && !isTMA) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/landing';
-    return NextResponse.redirect(url);
-  }
+  // We DISABLE the redirect loop here. 
+  // Let the application load so the client context can handle 
+  // checking for the Telegram Hash without losing it in a redirect.
+  // if (!sessionToken && !isTMA) {
+  //   const url = request.nextUrl.clone();
+  //   url.pathname = '/landing';
+  //   return NextResponse.redirect(url);
+  // }
 
   return NextResponse.next();
 }
