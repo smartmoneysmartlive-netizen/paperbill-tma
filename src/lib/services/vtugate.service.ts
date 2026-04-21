@@ -23,7 +23,9 @@ export class VTUGateService {
         },
         body: new URLSearchParams(params)
       });
-      return await response.json();
+      const data = await response.json();
+      console.log(`[VTUGate-DEBUG] Response (${endpoint}):`, JSON.stringify(data));
+      return data;
     } catch (err) {
       console.error(`[VTUGate] Request Error (${endpoint}):`, err);
       return { status: 0, message: 'VTUGate connection failed' };
