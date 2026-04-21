@@ -12,8 +12,26 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const plans = await VTUGateService.getPlans(serviceId);
-    return NextResponse.json(plans);
+    const endpoints = ['/fetchplans', '/fetchservicedetails', '/fetchvariations', '/fetchserviceproducts'];
+    const results: any = {};
+
+    for (const ep of endpoints) {
+      try {
+        const data = await VTUGateService.request(ep, { service_id: serviceId });
+        results[ep] = data;
+        // If we found a success response, we can stop or just return all to see
+        if (data.status === true || data.status === 1) {
+          return NextResponse.json({ working_endpoint: ep, data });
+        }
+      } catch (e) {
+        results[ep] = { error: 'failed' };
+      }
+    }
+
+    return NextResponse.json({ 
+      description: 'Scanner finished. No working endpoint found yet.',
+      results 
+    });
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
