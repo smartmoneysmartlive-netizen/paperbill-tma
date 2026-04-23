@@ -31,6 +31,14 @@ export const DATA_PLANS: Record<string, UtilityPlan[]> = {
     { id: 'ANR4', label: '1.5GB (7 Days)', price: 1100, cost: 1000, duration: '7 Days', category: 'Weekly Plans' },
     { id: 'ANR5', label: '4GB (30 Days)', price: 2700, cost: 2500, duration: '30 Days', category: 'Monthly Plans' },
     { id: 'ANR12', label: '18GB (30 Days)', price: 6500, cost: 6000, duration: '30 Days', category: 'Monthly Plans' },
+  ],
+  '9mobile': [
+    { id: 'ET1', label: '40MB (1 Day)', price: 70, cost: 50, duration: '1 Day', category: 'Quick Data' },
+    { id: 'ET2', label: '85MB (1 Day)', price: 120, cost: 100, duration: '1 Day', category: 'Quick Data' },
+    { id: 'ET5', label: '250MB (1 Day)', price: 250, cost: 200, duration: '1 Day', category: 'Quick Data' },
+    { id: 'EQ1', label: '1GB (1 Day)', price: 350, cost: 300, duration: '1 Day', category: 'Quick Data' },
+    { id: 'EQ2', label: '5.3GB (30 Days)', price: 2700, cost: 2500, duration: '30 Days', category: 'Monthly Plans' },
+    { id: 'EQ3', label: '35GB (30 Days)', price: 7500, cost: 7000, duration: '30 Days', category: 'Monthly Plans' },
   ]
 };
 

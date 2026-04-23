@@ -98,11 +98,11 @@ export class TransactionService {
     let vtuResult;
     try {
       if (record.type === 'data') {
-        vtuResult = await VTUService.buyData(record.payload.networkId, record.payload.phone, record.planId!, record.amount);
+        vtuResult = await VTUService.buyData(record.payload.networkId, record.payload.phone, record.planId!, apiCostKobo / 100);
       } else if (record.type === 'airtime') {
         vtuResult = await VTUService.buyAirtime(record.payload.networkId, record.payload.phone, record.amount);
       } else if (record.type === 'tv') {
-        vtuResult = await VTUService.buyCableTV(record.payload.provider, record.payload.phone, record.payload.smartcard, record.amount, String(record.planId), record.payload.planName);
+        vtuResult = await VTUService.buyCableTV(record.payload.provider, record.payload.phone, record.payload.smartcard, apiCostKobo / 100, String(record.planId), record.payload.planName);
       } else if (record.type === 'electricity') {
         vtuResult = await VTUService.buyElectricity(record.payload.disco, record.payload.meterNo, record.payload.phone, record.amount);
       } else {

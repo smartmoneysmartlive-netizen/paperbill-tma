@@ -10,8 +10,23 @@ export class VTUGateService {
   private static BASE_URL = 'https://api.vtugate.com/api/v1';
   private static API_KEY = process.env.VTUGATE_API_KEY || '95df79959cf58862066205bf73f5e96f';
 
-  /**
-   * Universal fetch for VTUGate
+  // Hardcoded IDs discovered from live testing for maximum reliability
+  private static SERVICE_ID_MAP: Record<string, string> = {
+    'airtime_mtn': '58',
+    'airtime_glo': '5',
+    'airtime_airtel': '4',
+    'airtime_9mobile': '6',
+    'data_mtn': '41',
+    'data_glo': '47',
+    'data_airtel': '46',
+    'data_9mobile': '48',
+    'tv_dstv': '7',
+    'tv_gotv': '8',
+    'tv_startimes': '17',
+    'electricity_abuja': '1',
+    'electricity_eko': '2',
+    'electricity_ikeja': '4'
+  };
    */
   private static async request(endpoint: string, params: Record<string, any>, method: 'POST' | 'GET' = 'POST'): Promise<VTUGateResponse> {
     try {
@@ -52,6 +67,11 @@ export class VTUGateService {
    * Dynamically discovery service IDs from the dashboard
    */
   private static async getServiceId(type: string, networkName: string): Promise<string | null> {
+    // 1. Try Hardcoded Map First (Fastest)
+    const key = `${type}_${networkName.toLowerCase()}`;
+    if (this.SERVICE_ID_MAP[key]) return this.SERVICE_ID_MAP[key];
+
+    // 2. Fallback to Discovery
     const resp = await this.request('/fetchservices', { service_type: type });
     const isSuccess = String(resp.status) === '1' || resp.status === true || String(resp.status).toLowerCase() === 'success';
     
