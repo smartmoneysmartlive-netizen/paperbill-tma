@@ -12,10 +12,10 @@ export class VTUService {
   private static CHEAPDATAHUB_URL = 'https://www.cheapdatahub.ng/api/v1/resellers';
 
   private static NETWORK_NAME_MAP: Record<string | number, string> = {
-    1: 'mtn', 'mtn': 'mtn',
-    2: 'glo', 'glo': 'glo',
-    3: 'airtel', 'airtel': 'airtel',
-    4: '9mobile', '9mobile': '9mobile'
+    1: 'mtn', 'mtn': 'mtn', 'MTN': 'mtn',
+    2: 'glo', 'glo': 'glo', 'GLO': 'glo', 'Glo': 'glo',
+    3: 'airtel', 'airtel': 'airtel', 'Airtel': 'airtel',
+    4: '9mobile', '9mobile': '9mobile', '9Mobile': '9mobile'
   };
 
   private static CHEAPDATAHUB_ID_MAP: Record<string | number, number> = {

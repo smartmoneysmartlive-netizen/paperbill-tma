@@ -22,7 +22,10 @@ export async function POST(
     }
 
     const body = await request.json();
-    const { phone, amount, provider, currency = 'NGN', planId, ...metadata } = body;
+    const { phone, phoneNumber, amount, provider, networkId, currency = 'NGN', planId, ...metadata } = body;
+
+    const targetPhone = phone || phoneNumber;
+    const targetNetwork = networkId || provider;
 
     // 2. Call the Transaction Engine with real ID
     const result = await TransactionService.process({
@@ -31,7 +34,12 @@ export async function POST(
       amount: Number(amount),
       currency: currency as 'NGN' | 'PAPER',
       planId: planId || undefined,
-      payload: { phone, provider, ...metadata }
+      payload: { 
+        phone: targetPhone, 
+        networkId: targetNetwork, 
+        provider: targetNetwork, 
+        ...metadata 
+      }
     });
 
     if (result.success) {
