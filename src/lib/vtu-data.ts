@@ -9,14 +9,12 @@ export type UtilityPlan = {
 
 export const DATA_PLANS: Record<string, UtilityPlan[]> = {
   mtn: [
-    { id: 'MS145', label: '230MB (1 Day)', price: 250, cost: 200, duration: '1 Day', category: 'Quick Data' },
-    { id: 'MS149', label: '500MB (1 Day)', price: 400, cost: 350, duration: '1 Day', category: 'Quick Data' },
-    { id: 'MS143', label: '1.5GB (7 Days)', price: 1100, cost: 1000, duration: '7 Days', category: 'Weekly Plans' },
-    { id: 'MS147', label: '3.5GB (7 Days)', price: 1700, cost: 1500, duration: '7 Days', category: 'Weekly Plans' },
-    { id: 'MS141', label: '7GB (30 Days)', price: 3800, cost: 3500, duration: '30 Days', category: 'Monthly Plans' },
-    { id: 'MS131', label: '10GB (30 Days)', price: 4800, cost: 4500, duration: '30 Days', category: 'Monthly Plans' },
-    { id: 'MS140', label: '20GB (30 Days)', price: 7800, cost: 7500, duration: '30 Days', category: 'Monthly Plans' },
-    { id: 'MS148', label: '65GB (30 Days)', price: 16500, cost: 16000, duration: '30 Days', category: 'Mega Plans' },
+    { id: 'MT003', label: '1GB (1 Day)', price: 350, cost: 300, duration: '1 Day', category: 'Quick Data' },
+    { id: 'MT004', label: '2.5GB (2 Days)', price: 650, cost: 600, duration: '2 Days', category: 'Quick Data' },
+    { id: 'MT008', label: '11GB (7 Days)', price: 4000, cost: 3500, duration: '7 Days', category: 'Weekly Plans' },
+    { id: 'MB5', label: '5.5GB (30 Days)', price: 3200, cost: 3000, duration: '30 Days', category: 'Monthly Plans' },
+    { id: 'MT011', label: '15GB (30 Days)', price: 5500, cost: 5000, duration: '30 Days', category: 'Monthly Plans' },
+    { id: 'MD3', label: '70GB (30 Days)', price: 21000, cost: 20000, duration: '30 Days', category: 'Mega Plans' },
   ],
   glo: [
     { id: '18', label: '45MB (1 Day)', price: 70, cost: 50, duration: '1 Day', category: 'Quick Data' },
@@ -27,12 +25,12 @@ export const DATA_PLANS: Record<string, UtilityPlan[]> = {
     { id: 'GL7', label: '105GB (30 Days)', price: 21000, cost: 20000, duration: '30 Days', category: 'Mega Plans' },
   ],
   airtel: [
-    { id: 'AI2', label: '100MB (1 Day)', price: 150, cost: 100, duration: '1 Day', category: 'Quick Data' },
-    { id: 'ART3', label: '1GB (1 Day)', price: 550, cost: 500, duration: '1 Day', category: 'Quick Data' },
-    { id: 'ART4', label: '2GB (2 Days)', price: 800, cost: 750, duration: '2 Days', category: 'Quick Data' },
-    { id: 'ART6', label: '5GB (7 Days)', price: 1600, cost: 1500, duration: '7 Days', category: 'Weekly Plans' },
-    { id: 'ART5', label: '2GB (30 Days)', price: 1100, cost: 1000, duration: '30 Days', category: 'Monthly Plans' },
-    { id: 'ATL10', label: '25GB (30 Days)', price: 8500, cost: 8000, duration: '30 Days', category: 'Monthly Plans' },
+    { id: 'ANR14', label: '200MB (5 Days)', price: 150, cost: 100, duration: '5 Days', category: 'Quick Data' },
+    { id: 'ANR18', label: '1GB (3 Days)', price: 350, cost: 300, duration: '3 Days', category: 'Quick Data' },
+    { id: 'ANR3', label: '1GB (7 Days)', price: 900, cost: 800, duration: '7 Days', category: 'Weekly Plans' },
+    { id: 'ANR4', label: '1.5GB (7 Days)', price: 1100, cost: 1000, duration: '7 Days', category: 'Weekly Plans' },
+    { id: 'ANR5', label: '4GB (30 Days)', price: 2700, cost: 2500, duration: '30 Days', category: 'Monthly Plans' },
+    { id: 'ANR12', label: '18GB (30 Days)', price: 6500, cost: 6000, duration: '30 Days', category: 'Monthly Plans' },
   ]
 };
 
