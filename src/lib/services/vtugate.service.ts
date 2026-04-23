@@ -27,6 +27,9 @@ export class VTUGateService {
     'electricity_eko': '2',
     'electricity_ikeja': '4'
   };
+  
+  /**
+   * Universal fetch for VTUGate
    */
   private static async request(endpoint: string, params: Record<string, any>, method: 'POST' | 'GET' = 'POST'): Promise<VTUGateResponse> {
     try {
