@@ -11,11 +11,18 @@ export type VTUResponse = {
 export class VTUService {
   private static CHEAPDATAHUB_URL = 'https://www.cheapdatahub.ng/api/v1/resellers';
 
-  private static NETWORK_NAME_MAP: Record<number, string> = {
-    1: 'mtn',
-    2: 'glo',
-    3: 'airtel',
-    4: '9mobile'
+  private static NETWORK_NAME_MAP: Record<string | number, string> = {
+    1: 'mtn', 'mtn': 'mtn',
+    2: 'glo', 'glo': 'glo',
+    3: 'airtel', 'airtel': 'airtel',
+    4: '9mobile', '9mobile': '9mobile'
+  };
+
+  private static CHEAPDATAHUB_ID_MAP: Record<string | number, number> = {
+    'mtn': 1, 1: 1,
+    'glo': 2, 2: 2,
+    'airtel': 3, 3: 3,
+    '9mobile': 4, 4: 4
   };
 
   /**
@@ -36,9 +43,11 @@ export class VTUService {
           provider: 'vtugate'
         };
       }
-    } catch (err) {
-      console.warn('[Orchestrator] VTUGate Airtime failed, falling back...');
+    } catch (err: any) {
+      console.warn(`[Orchestrator] VTUGate Airtime failed for ${networkName}:`, err.message || err);
     }
+
+    const cheapDataHubId = this.CHEAPDATAHUB_ID_MAP[providerId] || 1;
 
     // 2. Fallback to CheapDataHub
     try {
@@ -48,7 +57,7 @@ export class VTUService {
           'Authorization': `Bearer ${process.env.CHEAPDATAHUB_KEY}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ provider_id: providerId, phone_number: phone, amount }),
+        body: JSON.stringify({ provider_id: cheapDataHubId, phone_number: phone, amount }),
       });
       const data = await resp.json();
       
@@ -59,7 +68,8 @@ export class VTUService {
         reference: data.transaction_id || data.reference,
         provider: success ? 'cheapdatahub' : 'failed'
       };
-    } catch (err) {
+    } catch (err: any) {
+      console.error(`[Orchestrator] CheapDataHub Airtime Error:`, err.message || err);
       return { success: false, message: 'All providers failed', provider: 'failed' };
     }
   }
@@ -82,9 +92,11 @@ export class VTUService {
           provider: 'vtugate'
         };
       }
-    } catch (err) {
-      console.warn('[Orchestrator] VTUGate Data failed, falling back...');
+    } catch (err: any) {
+      console.warn(`[Orchestrator] VTUGate Data failed for ${networkName}:`, err.message || err);
     }
+
+    const cheapDataHubId = this.CHEAPDATAHUB_ID_MAP[networkId] || 1;
 
     // 2. Fallback to CheapDataHub
     try {
@@ -94,7 +106,7 @@ export class VTUService {
           'Authorization': `Bearer ${process.env.CHEAPDATAHUB_KEY}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ provider_id: networkId, phone_number: phone, plan_id: planId }),
+        body: JSON.stringify({ provider_id: cheapDataHubId, phone_number: phone, plan_id: planId }),
       });
       const data = await resp.json();
       const success = data.status === "true";

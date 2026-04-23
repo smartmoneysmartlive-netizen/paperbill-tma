@@ -1,7 +1,7 @@
 import { AuditLogger } from './logger.service';
 
 export type VTUGateResponse = {
-  status: number;
+  status: any; // Can be number (1/0), boolean (true/false), or string ('success')
   message: string;
   data?: any;
 };
@@ -32,9 +32,18 @@ export class VTUGateService {
       }
 
       const response = await fetch(url, options);
-      return await response.json();
-    } catch (err) {
-      console.error(`[VTUGate] Request Error (${endpoint}):`, err);
+      const data = await response.json();
+      
+      // Handle various success formats: number 1, boolean true, or string 'success'
+      const isSuccess = String(data.status) === '1' || data.status === true || String(data.status).toLowerCase() === 'success';
+      
+      if (!isSuccess) {
+        console.warn(`[VTUGate] API Warning (${endpoint}):`, data.message || 'No message', data);
+      }
+      
+      return data;
+    } catch (err: any) {
+      console.error(`[VTUGate] Request Error (${endpoint}):`, err.message || err);
       return { status: 0, message: 'VTUGate connection failed' };
     }
   }
@@ -44,12 +53,18 @@ export class VTUGateService {
    */
   private static async getServiceId(type: string, networkName: string): Promise<string | null> {
     const resp = await this.request('/fetchservices', { service_type: type });
-    if (resp.status === 1 && Array.isArray(resp.data)) {
+    const isSuccess = String(resp.status) === '1' || resp.status === true || String(resp.status).toLowerCase() === 'success';
+    
+    if (isSuccess && Array.isArray(resp.data)) {
       const service = resp.data.find((s: any) => 
         s.network_name.toLowerCase().includes(networkName.toLowerCase())
       );
+      if (!service) {
+        console.error(`[VTUGate] Service not found for ${type}/${networkName}. Available:`, resp.data.map((s: any) => s.network_name).join(', '));
+      }
       return service ? String(service.service_id) : null;
     }
+    console.error(`[VTUGate] Failed to fetch services for ${type}:`, resp.message);
     return null;
   }
 
