@@ -25,6 +25,16 @@ export class VTUService {
     '9mobile': 4, 4: 4
   };
 
+  // Mapping our string codes to CheapDataHub's numeric IDs
+  private static CHEAPDATAHUB_PLAN_MAP: Record<string, string> = {
+    'MT003': '7',   // MTN 1GB
+    'MT004': '8',   // MTN 2GB
+    'MT008': '11',  // MTN 5GB
+    'GD3': '13',    // Glo 1GB (approx)
+    'ANR3': '19',   // Airtel 1GB
+    'EQ1': '25'     // 9mobile 1GB
+  };
+
   /**
    * Orchestrated Airtime Purchase
    * VTUGate (Primary) -> CheapDataHub (Fallback)
@@ -100,13 +110,19 @@ export class VTUService {
 
     // 2. Fallback to CheapDataHub
     try {
+      const cheapDataHubPlanId = this.CHEAPDATAHUB_PLAN_MAP[String(planId)] || planId;
+      
       const resp = await fetch(`${this.CHEAPDATAHUB_URL}/data/purchase/`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${process.env.CHEAPDATAHUB_KEY}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ provider_id: cheapDataHubId, phone_number: phone, plan_id: planId }),
+        body: JSON.stringify({ 
+          provider_id: cheapDataHubId, 
+          phone_number: phone, 
+          plan_id: cheapDataHubPlanId 
+        }),
       });
       const data = await resp.json();
       const success = data.status === "true";

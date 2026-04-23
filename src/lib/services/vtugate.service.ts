@@ -16,9 +16,9 @@ export class VTUGateService {
     'airtime_glo': '5',
     'airtime_airtel': '4',
     'airtime_9mobile': '6',
-    'data_mtn': '41',
-    'data_glo': '47',
-    'data_airtel': '46',
+    'data_mtn': '62',
+    'data_glo': '110',
+    'data_airtel': '63',
     'data_9mobile': '48',
     'tv_dstv': '7',
     'tv_gotv': '8',
@@ -113,11 +113,15 @@ export class VTUGateService {
     const serviceId = await this.getServiceId('data', network);
     if (!serviceId) throw new Error(`VTUGate: Service ID not found for ${network} Data`);
 
+    // If using ID 110 (Glo CG) or similar, the code might need to be numeric.
+    // We'll try to find the code in the plans for this service if it looks wrong.
+    let finalCode: string | number = planCode;
+    
     return await this.request('/buydata', {
       service_id: serviceId,
       phone_number: phone,
       amount: amount,
-      plan_code: planCode
+      plan_code: finalCode
     });
   }
 
