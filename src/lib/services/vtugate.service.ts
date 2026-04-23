@@ -56,7 +56,7 @@ export class VTUGateService {
       const isSuccess = String(data.status) === '1' || data.status === true || String(data.status).toLowerCase() === 'success';
       
       if (!isSuccess) {
-        console.warn(`[VTUGate] API Warning (${endpoint}):`, data.message || 'No message', data);
+        console.warn(`[VTUGate] API Warning (${endpoint}):`, data.message || 'No message', JSON.stringify(data));
       }
       
       return data;
