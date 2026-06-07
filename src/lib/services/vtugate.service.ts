@@ -29,6 +29,28 @@ export class VTUGateService {
   };
   
   /**
+   * Normalizes a Nigerian phone number to the 11-digit local format (0XXXXXXXXXX).
+   * Handles: "7061785512" → "07061785512", "2347061785512" → "07061785512",
+   *          "+2347061785512" → "07061785512", "07061785512" → "07061785512"
+   */
+  private static normalizePhone(phone: string): string {
+    // Remove spaces, dashes, and plus sign
+    let cleaned = phone.replace(/[\s\-\+]/g, '');
+    
+    // Remove country code prefix (234)
+    if (cleaned.startsWith('234') && cleaned.length === 13) {
+      cleaned = '0' + cleaned.slice(3);
+    }
+    
+    // Prepend 0 if 10 digits (missing leading zero)
+    if (cleaned.length === 10 && !cleaned.startsWith('0')) {
+      cleaned = '0' + cleaned;
+    }
+    
+    return cleaned;
+  }
+
+  /**
    * Universal fetch for VTUGate
    */
   private static async request(endpoint: string, params: Record<string, any>, method: 'POST' | 'GET' = 'POST'): Promise<VTUGateResponse> {
@@ -100,7 +122,7 @@ export class VTUGateService {
 
     return await this.request('/buyairtime', {
       service_id: serviceId,
-      phone_number: phone,
+      phone_number: this.normalizePhone(phone),
       amount: amount
     });
   }
@@ -119,7 +141,7 @@ export class VTUGateService {
     
     return await this.request('/buydata', {
       service_id: serviceId,
-      phone_number: phone,
+      phone_number: this.normalizePhone(phone),
       amount: amount,
       plan_code: finalCode
     });
@@ -154,7 +176,7 @@ export class VTUGateService {
         meter_no: meter,
         disco: disco.toLowerCase(),
         amount,
-        phone_number: phone
+        phone_number: this.normalizePhone(phone)
      });
   }
 

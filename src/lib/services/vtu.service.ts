@@ -25,6 +25,20 @@ export class VTUService {
     '9mobile': 4, 4: 4
   };
 
+  /**
+   * Normalizes a Nigerian phone number to 11-digit local format (0XXXXXXXXXX).
+   */
+  private static normalizePhone(phone: string): string {
+    let cleaned = phone.replace(/[\s\-\+]/g, '');
+    if (cleaned.startsWith('234') && cleaned.length === 13) {
+      cleaned = '0' + cleaned.slice(3);
+    }
+    if (cleaned.length === 10 && !cleaned.startsWith('0')) {
+      cleaned = '0' + cleaned;
+    }
+    return cleaned;
+  }
+
   // Mapping our string codes to CheapDataHub's numeric IDs
   private static CHEAPDATAHUB_PLAN_MAP: Record<string, string> = {
     'MT003': '7',   // MTN 1GB
@@ -67,7 +81,7 @@ export class VTUService {
           'Authorization': `Bearer ${process.env.CHEAPDATAHUB_KEY}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ provider_id: cheapDataHubId, phone_number: phone, amount }),
+        body: JSON.stringify({ provider_id: cheapDataHubId, phone_number: this.normalizePhone(phone), amount }),
       });
       const data = await resp.json();
       
@@ -120,7 +134,7 @@ export class VTUService {
         },
         body: JSON.stringify({ 
           provider_id: cheapDataHubId, 
-          phone_number: phone, 
+          phone_number: this.normalizePhone(phone), 
           plan_id: cheapDataHubPlanId 
         }),
       });
