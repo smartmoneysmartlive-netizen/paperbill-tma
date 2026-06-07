@@ -51,6 +51,19 @@ export class VTUGateService {
   }
 
   /**
+   * Checks if a VTUGate response indicates success.
+   * VTUGate returns status in various formats: number (1), boolean (true), or string ('success').
+   * This is the SINGLE SOURCE OF TRUTH for interpreting VTUGate responses.
+   */
+  static isSuccess(response: VTUGateResponse): boolean {
+    return (
+      String(response.status) === '1' ||
+      response.status === true ||
+      String(response.status).toLowerCase() === 'success'
+    );
+  }
+
+  /**
    * Universal fetch for VTUGate
    */
   private static async request(endpoint: string, params: Record<string, any>, method: 'POST' | 'GET' = 'POST'): Promise<VTUGateResponse> {

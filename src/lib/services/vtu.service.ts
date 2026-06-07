@@ -59,7 +59,7 @@ export class VTUService {
     // 1. Try VTUGate
     try {
       const gateResp = await VTUGateService.buyAirtime(networkName, phone, amount);
-      if (gateResp.status === 1) {
+      if (VTUGateService.isSuccess(gateResp)) {
         return {
           success: true,
           message: gateResp.message,
@@ -108,7 +108,7 @@ export class VTUService {
     // We pass amount and we might need planCode mapping but for now use planId as code
     try {
       const gateResp = await VTUGateService.buyData(networkName, phone, amount, String(planId));
-      if (gateResp.status === 1) {
+      if (VTUGateService.isSuccess(gateResp)) {
         return {
           success: true,
           message: gateResp.message,
@@ -164,7 +164,7 @@ export class VTUService {
     // 1. Try VTUGate
     try {
       const gateResp = await VTUGateService.buyElectricity(disco, meter, phone, amount);
-      if (gateResp.status === 1) {
+      if (VTUGateService.isSuccess(gateResp)) {
         return {
           success: true,
           message: gateResp.message,
@@ -186,7 +186,7 @@ export class VTUService {
     // 1. Try VTUGate
     try {
       const gateResp = await VTUGateService.buyCableTV(provider, phone, smartcard, amount, planCode, planName);
-      if (gateResp.status === 1) {
+      if (VTUGateService.isSuccess(gateResp)) {
         return {
           success: true,
           message: gateResp.message,
