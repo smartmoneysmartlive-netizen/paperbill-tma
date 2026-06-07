@@ -12,6 +12,10 @@
   --bg-dark: #0D1117;
   --card-dark: #161B22;
 
+  /* Default Light Theme variables */
+  --background: var(--bg-light);
+  --foreground: var(--text-primary);
+
   /* Text Colors */
   --text-primary: #1A1A1A;
   --text-secondary: #6B7280;

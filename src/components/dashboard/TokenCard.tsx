@@ -11,6 +11,24 @@ export default function TokenCard() {
   const [balance, setBalance] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const { initDataRaw } = useTelegramAuth();
+  const [showBalance, setShowBalance] = useState(true);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('paperbill-show-balance');
+    if (saved !== null) {
+      setShowBalance(saved === 'true');
+    }
+
+    const handleSync = () => {
+      const updated = localStorage.getItem('paperbill-show-balance');
+      if (updated !== null) {
+        setShowBalance(updated === 'true');
+      }
+    };
+
+    window.addEventListener('balance-visibility-changed', handleSync);
+    return () => window.removeEventListener('balance-visibility-changed', handleSync);
+  }, []);
 
   useEffect(() => {
     async function fetchPaperBalance() {
@@ -55,10 +73,10 @@ export default function TokenCard() {
               <span style={{ fontSize: '12px', fontWeight: '600', color: '#0A1F44' }}>PAPER BALANCE</span>
             </div>
             <h2 style={{ fontSize: '24px', fontWeight: '700', color: '#0A1F44', marginTop: '4px' }}>
-              {loading ? '...' : (balance || 0).toLocaleString()} PAPER
+              {loading ? '...' : (showBalance ? `${(balance || 0).toLocaleString()} PAPER` : '•••• PAPER')}
             </h2>
             <p style={{ fontSize: '13px', fontWeight: '500', color: '#0A1F44', opacity: 0.7 }}>
-              ≈ ₦ {estimatedNaira.toLocaleString()}.00
+              ≈ {showBalance ? `₦ ${estimatedNaira.toLocaleString()}.00` : '₦ ••••••'}
             </p>
           </div>
           <div style={{ background: 'rgba(10, 31, 68, 0.1)', padding: '8px', borderRadius: '12px' }}>
