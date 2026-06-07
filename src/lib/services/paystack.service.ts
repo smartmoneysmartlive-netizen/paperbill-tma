@@ -19,10 +19,28 @@ export class PaystackService {
   private static FLAT_FEE_NGN = 80;
 
   /**
+   * Returns the app's base URL for server-side use (e.g. Paystack callback).
+   * Prefers APP_BASE_URL (runtime, server-only) over NEXT_PUBLIC_WEBAPP_URL
+   * (which is inlined at build time and may be stale after env var changes).
+   */
+  private static getBaseUrl(): string {
+    return (
+      process.env.APP_BASE_URL ||
+      process.env.NEXT_PUBLIC_WEBAPP_URL ||
+      'http://localhost:3000'
+    );
+  }
+
+  /**
    * Initializes a payment session for the user
    * @param amountNaira The amount the user wants to RECEIVE (e.g. 1000)
    */
   static async initializeDeposit(userId: string, email: string, amountNaira: number): Promise<PaystackInitializeResponse> {
+    if (!this.SECRET_KEY) {
+      console.error('[PaystackService] FATAL: PAYSTACK_SECRET_KEY is not set. Payments will fail.');
+      throw new Error('Payment service is not configured. Please contact support.');
+    }
+
     if (amountNaira < this.MIN_DEPOSIT_NGN) {
       throw new Error(`Minimum deposit is ₦${this.MIN_DEPOSIT_NGN}`);
     }
@@ -40,7 +58,7 @@ export class PaystackService {
       body: JSON.stringify({
         email,
         amount: amountInKobo,
-        callback_url: `${process.env.NEXT_PUBLIC_WEBAPP_URL}/wallet`,
+        callback_url: `${this.getBaseUrl()}/wallet`,
         metadata: {
           userId,
           amountToCredit: amountNaira // We store the net amount to credit in metadata
