@@ -1,13 +1,15 @@
 'use client';
 
 import { useTheme } from '@/components/ThemeProvider';
-import { Moon, Sun, Shield, HelpCircle, LogOut, ChevronRight } from 'lucide-react';
+import { Moon, Sun, Shield, HelpCircle, LogOut, ChevronRight, History } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTelegramAuth } from '@/components/TelegramProvider';
+import { useRouter } from 'next/navigation';
 
 export default function ProfilePage() {
   const { theme, toggleTheme } = useTheme();
   const { user } = useTelegramAuth();
+  const router = useRouter();
 
   return (
     <div className="page-container">
@@ -71,6 +73,7 @@ export default function ProfilePage() {
         </section>
 
         {/* Other Menu Items */}
+        <MenuItem icon={History} label="Activity Logs" color="#4F46E5" onClick={() => router.push('/profile/logs')} />
         <MenuItem icon={Shield} label="Security & PIN" color="#10B981" />
         <MenuItem icon={HelpCircle} label="Help & Support" color="#F59E0B" />
         <MenuItem icon={LogOut} label="Logout" color="#EF4444" hideArrow />
@@ -79,9 +82,13 @@ export default function ProfilePage() {
   );
 }
 
-function MenuItem({ icon: Icon, label, color, hideArrow = false }: any) {
+function MenuItem({ icon: Icon, label, color, hideArrow = false, onClick }: any) {
   return (
-    <div className="card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}>
+    <div 
+      className="card" 
+      onClick={onClick}
+      style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
+    >
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
         <div style={{ ...iconStyle, backgroundColor: `${color}15` }}>
           <Icon size={20} color={color} />
