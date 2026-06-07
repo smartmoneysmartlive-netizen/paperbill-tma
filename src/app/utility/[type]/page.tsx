@@ -102,14 +102,12 @@ export default function UtilityPage({ params }: { params: Promise<{ type: string
           'Authorization': `Bearer ${initDataRaw}`
         },
         body: JSON.stringify({
+          phone,
+          networkId: selectedProvider,
           amount: selectedPlan?.price || amount,
           planId: selectedPlan?.id,
           currency: usePaper ? 'PAPER' : 'NGN',
-          payload: {
-            phone,
-            networkId: selectedProvider,
-            meterType
-          }
+          meterType
         })
       });
 
