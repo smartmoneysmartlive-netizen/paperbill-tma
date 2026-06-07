@@ -10,8 +10,9 @@ export class VTUGateService {
   private static BASE_URL = 'https://api.vtugate.com/api/v1';
   private static API_KEY = process.env.VTUGATE_API_KEY || '95df79959cf58862066205bf73f5e96f';
 
-  // Hardcoded IDs discovered from live testing for maximum reliability
-  private static SERVICE_ID_MAP: Record<string, string> = {
+  // Fallback IDs — only used when API discovery fails. These can go stale
+  // when VTUGate changes providers, so discovery is always tried first.
+  private static FALLBACK_SERVICE_ID_MAP: Record<string, string> = {
     'airtime_mtn': '58',
     'airtime_glo': '5',
     'airtime_airtel': '4',
@@ -27,26 +28,23 @@ export class VTUGateService {
     'electricity_eko': '2',
     'electricity_ikeja': '4'
   };
-  
+
+  // Runtime cache for discovered service IDs (persists within serverless function lifecycle)
+  private static discoveredServiceIds: Record<string, string> = {};
+
   /**
    * Normalizes a Nigerian phone number to the 11-digit local format (0XXXXXXXXXX).
    * Handles: "7061785512" → "07061785512", "2347061785512" → "07061785512",
    *          "+2347061785512" → "07061785512", "07061785512" → "07061785512"
    */
   private static normalizePhone(phone: string): string {
-    // Remove spaces, dashes, and plus sign
     let cleaned = phone.replace(/[\s\-\+]/g, '');
-    
-    // Remove country code prefix (234)
     if (cleaned.startsWith('234') && cleaned.length === 13) {
       cleaned = '0' + cleaned.slice(3);
     }
-    
-    // Prepend 0 if 10 digits (missing leading zero)
     if (cleaned.length === 10 && !cleaned.startsWith('0')) {
       cleaned = '0' + cleaned;
     }
-    
     return cleaned;
   }
 
@@ -87,10 +85,7 @@ export class VTUGateService {
       const response = await fetch(url, options);
       const data = await response.json();
       
-      // Handle various success formats: number 1, boolean true, or string 'success'
-      const isSuccess = String(data.status) === '1' || data.status === true || String(data.status).toLowerCase() === 'success';
-      
-      if (!isSuccess) {
+      if (!this.isSuccess(data)) {
         console.warn(`[VTUGate] API Warning (${endpoint}):`, data.message || 'No message', JSON.stringify(data));
       }
       
@@ -102,27 +97,51 @@ export class VTUGateService {
   }
 
   /**
-   * Dynamically discovery service IDs from the dashboard
+   * Fetches the correct service ID for a given type/network from the VTUGate API.
+   * Strategy: Cached discovery > Live API discovery > Hardcoded fallback.
+   * This prevents stale hardcoded IDs from causing "Invalid service_id" errors.
    */
   private static async getServiceId(type: string, networkName: string): Promise<string | null> {
-    // 1. Try Hardcoded Map First (Fastest)
     const key = `${type}_${networkName.toLowerCase()}`;
-    if (this.SERVICE_ID_MAP[key]) return this.SERVICE_ID_MAP[key];
 
-    // 2. Fallback to Discovery
-    const resp = await this.request('/fetchservices', { service_type: type });
-    const isSuccess = String(resp.status) === '1' || resp.status === true || String(resp.status).toLowerCase() === 'success';
-    
-    if (isSuccess && Array.isArray(resp.data)) {
-      const service = resp.data.find((s: any) => 
-        s.network_name.toLowerCase().includes(networkName.toLowerCase())
-      );
-      if (!service) {
-        console.error(`[VTUGate] Service not found for ${type}/${networkName}. Available:`, resp.data.map((s: any) => s.network_name).join(', '));
-      }
-      return service ? String(service.service_id) : null;
+    // 1. Check runtime cache first (fastest, already verified to work)
+    if (this.discoveredServiceIds[key]) {
+      return this.discoveredServiceIds[key];
     }
-    console.error(`[VTUGate] Failed to fetch services for ${type}:`, resp.message);
+
+    // 2. Try live API discovery (most reliable)
+    try {
+      const resp = await this.request('/fetchservices', { service_type: type });
+      
+      if (this.isSuccess(resp) && Array.isArray(resp.data)) {
+        // Log available services for debugging
+        console.log(`[VTUGate] Available ${type} services:`, resp.data.map((s: any) => `${s.network_name}(${s.service_id})`).join(', '));
+
+        const service = resp.data.find((s: any) =>
+          s.network_name?.toLowerCase().includes(networkName.toLowerCase())
+        );
+
+        if (service) {
+          const serviceId = String(service.service_id);
+          // Cache for subsequent calls
+          this.discoveredServiceIds[key] = serviceId;
+          console.log(`[VTUGate] Discovered ${key} = ${serviceId}`);
+          return serviceId;
+        }
+
+        console.warn(`[VTUGate] No service matching "${networkName}" for type "${type}". Available:`, resp.data.map((s: any) => s.network_name).join(', '));
+      }
+    } catch (err) {
+      console.warn(`[VTUGate] Service discovery failed for ${key}:`, err);
+    }
+
+    // 3. Last resort: hardcoded fallback (may be stale)
+    if (this.FALLBACK_SERVICE_ID_MAP[key]) {
+      console.warn(`[VTUGate] Using hardcoded fallback ID for ${key}: ${this.FALLBACK_SERVICE_ID_MAP[key]}`);
+      return this.FALLBACK_SERVICE_ID_MAP[key];
+    }
+
+    console.error(`[VTUGate] No service ID found for ${key} — discovery and fallback both failed.`);
     return null;
   }
 
